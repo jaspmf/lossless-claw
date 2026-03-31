@@ -608,6 +608,10 @@ export class SummaryStore {
   }
 
   async pruneForNewSession(conversationId: number, retainDepth: number): Promise<void> {
+    if (Number.isFinite(retainDepth) && retainDepth < 0) {
+      return;
+    }
+
     this.db
       .prepare(
         `DELETE FROM context_items
@@ -624,10 +628,6 @@ export class SummaryStore {
            AND item_type = 'summary'`,
         )
         .run(conversationId);
-      return;
-    }
-
-    if (retainDepth < 0) {
       return;
     }
 
